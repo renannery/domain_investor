@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:domain_investor/api.dart';
+import 'package:domain_investor/filter_model.dart';
 import 'package:domain_investor/locator.dart';
 import 'package:domain_investor/viewstate.dart';
 import 'package:flutter/widgets.dart';
@@ -15,6 +16,7 @@ class BaseModel extends ChangeNotifier {
       },
     ),
   );
+  FilterModel filterModel = locator<FilterModel>();
   NumberFormat numberFormat = locator<NumberFormat>();
   String errorMessage;
   bool disposed = false;

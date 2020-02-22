@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:domain_investor/base_view.dart';
 import 'package:domain_investor/domain.dart';
 import 'package:domain_investor/domain_model.dart';
+import 'package:domain_investor/filter_page.dart';
 import 'package:domain_investor/search_page_model.dart';
 import 'package:domain_investor/search_widget.dart';
 import 'package:domain_investor/viewstate.dart';
@@ -12,39 +13,53 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(24),
-        child: BaseView<SearchPageViewModel>(
-          builder: (context, model, child) {
-            return Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SearchWidget(
+      appBar: AppBar(
+        title: Text("Domain Investor"),
+      ),
+      body: BaseView<SearchPageViewModel>(
+        builder: (context, model, child) {
+          return Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    child: SearchWidget(
                       labelText: "Search",
                       onTextChanged: (value) {
                         model.searchDomains(value);
                       },
+                      onFilterClick: () async {
+                        final reload = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FilterPage()),
+                        );
+                        model.searchDomains(model.searchValue,
+                            reload: reload == true);
+                      },
                     ),
-                    Expanded(
-                      child: SingleChildScrollView(
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Column(
                             children:
                                 _searchList(context, model, model.domainsList)),
                       ),
                     ),
-                  ],
-                ),
-                Visibility(
-                  visible: model.state == ViewState.Busy,
-                  child: Center(
-                    child: CircularProgressIndicator(),
                   ),
-                )
-              ],
-            );
-          },
-        ),
+                ],
+              ),
+              Visibility(
+                visible: model.state == ViewState.Busy,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
@@ -58,14 +73,39 @@ class SearchPage extends StatelessWidget {
           return Center(child: Text("no results"));
         }
         return BaseView<DomainModel>(
-          onModelReady: (model) => model.init(domains[index]),
+          onModelReady: (model) => model.init(domains[index], searchModel),
           builder: (context, model, child) {
-            return ListTile(
-              title: Text(model.name()),
-              subtitle: model.state == ViewState.Busy
-                  ? _shimmer()
-                  : Text(model.price()),
-              trailing: Text(model.estimatedValue()),
+            return Visibility(
+              visible: model.display(),
+              child: ListTile(
+                title: Text(model.name()),
+                subtitle: model.state == ViewState.Busy
+                    ? _shimmer()
+                    : Text(model.price()),
+                trailing: model.hasError()
+                    ? InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Error"),
+                                content: Text(model.errorMessage),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("Ok".toUpperCase()),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Icon(Icons.warning, color: Colors.yellow[800]))
+                    : Text(model.estimatedValue()),
+              ),
             );
           },
         );
