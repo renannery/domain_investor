@@ -10,6 +10,7 @@ class SearchPageViewModel extends BaseModel {
   String searchValue = "";
 
   Future init() async {
+    await setCurrency();
     setState(ViewState.Idle);
   }
 
@@ -82,6 +83,19 @@ class SearchPageViewModel extends BaseModel {
   Future<Response> loadSearch(String domain) async {
     return await api
         .get("https://www.godaddy.com/domainfind/v1/search/spins?q=$domain")
+        .catchError(
+      (error) {
+        var message = (error as DioError).response.data["message"].toString();
+        errorMessage = message;
+        print(message);
+        setState(ViewState.Idle);
+      },
+    );
+  }
+
+  Future<Response> setCurrency() async {
+    return await api
+        .get("https://gui.godaddy.com/preference/currency/set/USD")
         .catchError(
       (error) {
         var message = (error as DioError).response.data["message"].toString();

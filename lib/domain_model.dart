@@ -6,6 +6,7 @@ import 'package:domain_investor/product.dart';
 import 'package:domain_investor/search_page_model.dart';
 import 'package:domain_investor/serializers.dart';
 import 'package:domain_investor/viewstate.dart';
+import 'package:flutter/material.dart';
 
 class DomainModel extends BaseModel {
   Domain domain;
@@ -21,20 +22,25 @@ class DomainModel extends BaseModel {
     setState(ViewState.Idle);
   }
 
-  String name() {
-    return domain.name;
+  Widget name(BuildContext context) {
+    return _domainName(context, domain.name, domain.tld);
   }
 
   String price() {
-    return "price: ${domain.price?.toString() ?? "null"}";
+    return "${domain.displayPrice ?? ""}";
   }
 
   bool hasError() {
     return errorMessage != null && errorMessage.isNotEmpty;
   }
 
+  String formattedPrice(int number) {
+    numberFormat.maximumFractionDigits = 0;
+    return numberFormat.format(number);
+  }
+
   String estimatedValue() {
-    String value = "value:\n";
+    String value = "Estimated value: ";
     if (domain.estimatedValue != null && domain.estimatedValue <= 100) {
       return value + "less than \$100";
     }
@@ -43,7 +49,11 @@ class DomainModel extends BaseModel {
       return "Error";
     }
 
-    return value + (domain.estimatedValue?.toString() ?? "");
+    if (domain.estimatedValue == null) {
+      return "";
+    }
+
+    return value + formattedPrice(domain.estimatedValue.toInt());
   }
 
   bool display() {
@@ -97,8 +107,11 @@ class DomainModel extends BaseModel {
       var products = deserializeListOf<Product>(resultPrice.data['Products']);
 
       if (products != null && products.isNotEmpty) {
-        domain = domain.rebuild((updates) =>
-            updates.price = products.first.priceInfo.currentPrice.toDouble());
+        domain = domain.rebuild(
+          (updates) => updates
+            ..price = products.first.priceInfo.currentPrice.toDouble()
+            ..displayPrice = products.first.priceInfo.currentPriceDisplay,
+        );
       }
 
       if (filterModel.estimateValue) {
@@ -121,5 +134,69 @@ class DomainModel extends BaseModel {
     } catch (e) {
       print(e);
     }
+  }
+
+  Widget goValue() {
+    if (!filterModel.estimateValue) {
+      return SizedBox.shrink();
+    }
+
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+          child: Image.asset(
+            "assets/govalue.png",
+            height: 14,
+          ),
+        ),
+        Text(estimatedValue())
+      ],
+    );
+  }
+
+  Widget _domainName(BuildContext context, String fqdn, String tld) {
+    final style = TextStyle(color: Theme.of(context).accentColor);
+    final spans = _getSpans(fqdn, "." + tld, style);
+
+    return RichText(
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18),
+        children: spans,
+      ),
+    );
+  }
+
+  List<TextSpan> _getSpans(String text, String matchWord, TextStyle style) {
+    List<TextSpan> spans = [];
+    int spanBoundary = 0;
+
+    do {
+      // look for the next match
+      final startIndex = text.indexOf(matchWord, spanBoundary);
+
+      // if no more matches then add the rest of the string without style
+      if (startIndex == -1) {
+        spans.add(TextSpan(text: text.substring(spanBoundary)));
+        return spans;
+      }
+
+      // add any unstyled text before the next match
+      if (startIndex > spanBoundary) {
+        spans.add(TextSpan(text: text.substring(spanBoundary, startIndex)));
+      }
+
+      // style the matched text
+      final endIndex = startIndex + matchWord.length;
+      final spanText = text.substring(startIndex, endIndex);
+      spans.add(TextSpan(text: spanText, style: style));
+
+      // mark the boundary to start the next search from
+      spanBoundary = endIndex;
+
+      // continue until there are no more matches
+    } while (spanBoundary < text.length);
+
+    return spans;
   }
 }

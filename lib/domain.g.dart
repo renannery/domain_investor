@@ -42,6 +42,12 @@ class _$DomainSerializer implements StructuredSerializer<Domain> {
         ..add(serializers.serialize(object.price,
             specifiedType: const FullType(double)));
     }
+    if (object.displayPrice != null) {
+      result
+        ..add('displayPrice')
+        ..add(serializers.serialize(object.displayPrice,
+            specifiedType: const FullType(String)));
+    }
     if (object.estimatedValue != null) {
       result
         ..add('estimatedValue')
@@ -78,6 +84,10 @@ class _$DomainSerializer implements StructuredSerializer<Domain> {
           result.price = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
           break;
+        case 'displayPrice':
+          result.displayPrice = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'estimatedValue':
           result.estimatedValue = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
@@ -99,13 +109,20 @@ class _$Domain extends Domain {
   @override
   final double price;
   @override
+  final String displayPrice;
+  @override
   final double estimatedValue;
 
   factory _$Domain([void Function(DomainBuilder) updates]) =>
       (new DomainBuilder()..update(updates)).build();
 
   _$Domain._(
-      {this.domainId, this.name, this.tld, this.price, this.estimatedValue})
+      {this.domainId,
+      this.name,
+      this.tld,
+      this.price,
+      this.displayPrice,
+      this.estimatedValue})
       : super._();
 
   @override
@@ -123,14 +140,19 @@ class _$Domain extends Domain {
         name == other.name &&
         tld == other.tld &&
         price == other.price &&
+        displayPrice == other.displayPrice &&
         estimatedValue == other.estimatedValue;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc($jc(0, domainId.hashCode), name.hashCode), tld.hashCode),
-            price.hashCode),
+        $jc(
+            $jc(
+                $jc($jc($jc(0, domainId.hashCode), name.hashCode),
+                    tld.hashCode),
+                price.hashCode),
+            displayPrice.hashCode),
         estimatedValue.hashCode));
   }
 
@@ -141,6 +163,7 @@ class _$Domain extends Domain {
           ..add('name', name)
           ..add('tld', tld)
           ..add('price', price)
+          ..add('displayPrice', displayPrice)
           ..add('estimatedValue', estimatedValue))
         .toString();
   }
@@ -165,6 +188,10 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
   double get price => _$this._price;
   set price(double price) => _$this._price = price;
 
+  String _displayPrice;
+  String get displayPrice => _$this._displayPrice;
+  set displayPrice(String displayPrice) => _$this._displayPrice = displayPrice;
+
   double _estimatedValue;
   double get estimatedValue => _$this._estimatedValue;
   set estimatedValue(double estimatedValue) =>
@@ -178,6 +205,7 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
       _name = _$v.name;
       _tld = _$v.tld;
       _price = _$v.price;
+      _displayPrice = _$v.displayPrice;
       _estimatedValue = _$v.estimatedValue;
       _$v = null;
     }
@@ -205,6 +233,7 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
             name: name,
             tld: tld,
             price: price,
+            displayPrice: displayPrice,
             estimatedValue: estimatedValue);
     replace(_$result);
     return _$result;

@@ -20,6 +20,9 @@ abstract class Domain implements Built<Domain, DomainBuilder> {
   double get price;
 
   @nullable
+  String get displayPrice;
+
+  @nullable
   double get estimatedValue;
 
   Domain._();
@@ -33,6 +36,7 @@ abstract class Domain implements Built<Domain, DomainBuilder> {
 
     builder.name = recommendedBuilder.fqdn;
     builder.price = recommendedBuilder.usdPrice.toDouble();
+    builder.displayPrice = recommendedBuilder.priceDisplay;
     builder.tld = recommendedBuilder.extension;
     return builder.build();
   }

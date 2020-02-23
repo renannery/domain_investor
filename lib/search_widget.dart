@@ -52,8 +52,11 @@ class _SearchWidgetState extends State<SearchWidget> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.all(Radius.circular(4)),
+              border: Border.all(
+                width: 1.0,
+                color: Color(0xffd3dbe0),
+              ),
             ),
             child: Expanded(
               child: TextField(
@@ -64,11 +67,17 @@ class _SearchWidgetState extends State<SearchWidget> {
                 style: Theme.of(context).textTheme.subtitle2,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Color(0xffd3dbe0),
+                  ),
                   suffixIcon: _searchQuery.text.isEmpty
                       ? null
                       : IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: Icon(
+                            Icons.clear,
+                            color: Color(0xffd3dbe0),
+                          ),
                           onPressed: () {
                             _searchQuery.clear();
                           },
@@ -80,15 +89,24 @@ class _SearchWidgetState extends State<SearchWidget> {
             ),
           ),
         ),
-        InkWell(
-          onTap: () {
-            widget.onFilterClick();
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.filter_list,
-              color: Colors.blue,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+          child: ClipOval(
+            child: Material(
+              color: Color.fromRGBO(17, 17, 17, 1),
+              child: InkWell(
+                splashColor: Color(0xffd3dbe0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.filter_list,
+                    color: Color(0xffd3dbe0),
+                  ),
+                ),
+                onTap: () {
+                  widget.onFilterClick();
+                },
+              ),
             ),
           ),
         )

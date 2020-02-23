@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:domain_investor/base_view.dart';
+import 'package:domain_investor/custom_appbar.dart';
 import 'package:domain_investor/domain.dart';
 import 'package:domain_investor/domain_model.dart';
 import 'package:domain_investor/filter_page.dart';
@@ -13,15 +14,13 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Domain Investor"),
-      ),
       body: BaseView<SearchPageViewModel>(
         builder: (context, model, child) {
           return Stack(
             children: <Widget>[
               Column(
                 children: <Widget>[
+                  GradientAppBar("GoDaddy Investor"),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                     child: SearchWidget(
@@ -78,11 +77,8 @@ class SearchPage extends StatelessWidget {
             return Visibility(
               visible: model.display(),
               child: ListTile(
-                title: Text(model.name()),
-                subtitle: model.state == ViewState.Busy
-                    ? _shimmer()
-                    : Text(model.price()),
-                trailing: model.hasError()
+                title: model.name(context),
+                subtitle: model.hasError()
                     ? InkWell(
                         onTap: () {
                           showDialog(
@@ -104,7 +100,20 @@ class SearchPage extends StatelessWidget {
                           );
                         },
                         child: Icon(Icons.warning, color: Colors.yellow[800]))
-                    : Text(model.estimatedValue()),
+                    : model.goValue(),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    model.state == ViewState.Busy
+                        ? _shimmer()
+                        : Text(
+                            model.price(),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).accentColor),
+                          ),
+                  ],
+                ),
               ),
             );
           },
