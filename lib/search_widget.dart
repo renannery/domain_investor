@@ -39,7 +39,7 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
       widget.onTextChanged(_searchQuery.text.trim());
     });
   }
@@ -58,33 +58,31 @@ class _SearchWidgetState extends State<SearchWidget> {
                 color: Color(0xffd3dbe0),
               ),
             ),
-            child: Expanded(
-              child: TextField(
-                controller: _searchQuery,
-                textCapitalization: TextCapitalization.sentences,
-                autofocus: widget.requestFocus,
-                textAlignVertical: TextAlignVertical.center,
-                style: Theme.of(context).textTheme.subtitle2,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Color(0xffd3dbe0),
-                  ),
-                  suffixIcon: _searchQuery.text.isEmpty
-                      ? null
-                      : IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            color: Color(0xffd3dbe0),
-                          ),
-                          onPressed: () {
-                            _searchQuery.clear();
-                          },
-                        ),
-                  focusedBorder: InputBorder.none,
-                  hintText: widget.labelText,
+            child: TextField(
+              controller: _searchQuery,
+              textCapitalization: TextCapitalization.none,
+              autofocus: widget.requestFocus,
+              textAlignVertical: TextAlignVertical.center,
+              style: Theme.of(context).textTheme.subtitle2,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Color(0xffd3dbe0),
                 ),
+                suffixIcon: _searchQuery.text.isEmpty
+                    ? null
+                    : IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color: Color(0xffd3dbe0),
+                        ),
+                        onPressed: () {
+                          _searchQuery.clear();
+                        },
+                      ),
+                focusedBorder: InputBorder.none,
+                hintText: widget.labelText,
               ),
             ),
           ),

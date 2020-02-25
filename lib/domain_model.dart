@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:domain_investor/base_model.dart';
 import 'package:domain_investor/domain.dart';
 import 'package:domain_investor/estimated_value.dart';
+import 'package:domain_investor/exact_match_domain.dart';
 import 'package:domain_investor/product.dart';
 import 'package:domain_investor/search_page_model.dart';
 import 'package:domain_investor/serializers.dart';
@@ -28,6 +29,14 @@ class DomainModel extends BaseModel {
 
   String price() {
     return "${domain.displayPrice ?? ""}";
+  }
+
+  bool unavailable() {
+    return domain.isAvailable == false;
+  }
+
+  bool isPremium() {
+    return domain.isPremium != null && domain.isPremium == true;
   }
 
   bool hasError() {
@@ -67,6 +76,10 @@ class DomainModel extends BaseModel {
       return true;
     }
 
+    if (filterModel.availableOnly && domain.isAvailable == false) {
+      return false;
+    }
+
     final minValue = filterModel.rangeValue.start;
     final maxValue = filterModel.rangeValue.end;
 
@@ -75,14 +88,12 @@ class DomainModel extends BaseModel {
 
     var inValueRange = true;
     if (filterModel.estimateValue) {
-      inValueRange = minValue <= domain.estimatedValue && maxValue == 2500
-          ? true
-          : domain.estimatedValue <= maxValue;
+      inValueRange = minValue <= domain.estimatedValue &&
+          (maxValue == 2500 ? true : domain.estimatedValue <= maxValue);
     }
 
-    var inPriceRange = minPrice <= domain.price && maxPrice == 200
-        ? true
-        : domain.price <= maxPrice;
+    var inPriceRange = minPrice <= domain.price &&
+        (maxPrice == 200 ? true : domain.price <= maxPrice);
     return inValueRange && inPriceRange;
   }
 
@@ -91,54 +102,62 @@ class DomainModel extends BaseModel {
       return;
     }
 
-    try {
-      Response resultPrice = await api
-          .get(
-              "https://www.godaddy.com/domainsapi/v1/search/exact?q=${domain.name}")
+    Response resultPrice = await api
+        .get(
+            "https://www.godaddy.com/domainsapi/v1/search/exact?q=${domain.name}")
+        .catchError(
+      (error) {
+        errorMessage = "error";
+        var message = (error as DioError).response.data["message"].toString();
+        errorMessage = message;
+        setState(ViewState.Idle);
+      },
+    );
+
+    var products = deserializeListOf<Product>(resultPrice.data['Products']);
+
+    var exactMatchDomain =
+        deserialize<ExactMatchDomain>(resultPrice.data['ExactMatchDomain']);
+
+    final currentPrice = exactMatchDomain.price > 0
+        ? exactMatchDomain.price
+        : products.first.priceInfo.currentPrice;
+    final currentPriceDisplay = exactMatchDomain.price > 0
+        ? exactMatchDomain.priceDisplay
+        : products.first.priceInfo.currentPriceDisplay;
+
+    final isAvailable = exactMatchDomain.isAvailable;
+
+    if (products != null && products.isNotEmpty) {
+      domain = domain.rebuild(
+        (updates) => updates
+          ..price = currentPrice
+          ..displayPrice = currentPriceDisplay
+          ..isAvailable = isAvailable,
+      );
+    }
+
+    if (filterModel.estimateValue && display()) {
+      Response resultValue = await api
+          .get("https://api.godaddy.com/v1/appraisal/${domain.name}")
           .catchError(
         (error) {
           var message = (error as DioError).response.data["message"].toString();
           errorMessage = message;
-          print(message);
           setState(ViewState.Idle);
         },
       );
-
-      var products = deserializeListOf<Product>(resultPrice.data['Products']);
-
-      if (products != null && products.isNotEmpty) {
-        domain = domain.rebuild(
-          (updates) => updates
-            ..price = products.first.priceInfo.currentPrice.toDouble()
-            ..displayPrice = products.first.priceInfo.currentPriceDisplay,
-        );
+      if (resultValue.data != null) {
+        var estimatedValue = deserialize<EstimatedValue>(resultValue.data);
+        domain = domain.rebuild((updates) =>
+            updates.estimatedValue = estimatedValue.govalue.toDouble());
       }
-
-      if (filterModel.estimateValue) {
-        Response resultValue = await api
-            .get("https://api.godaddy.com/v1/appraisal/${domain.name}")
-            .catchError(
-          (error) {
-            var message =
-                (error as DioError).response.data["message"].toString();
-            errorMessage = message;
-            setState(ViewState.Idle);
-          },
-        );
-        if (resultValue.data != null) {
-          var estimatedValue = deserialize<EstimatedValue>(resultValue.data);
-          domain = domain.rebuild((updates) =>
-              updates.estimatedValue = estimatedValue.govalue.toDouble());
-        }
-      }
-    } catch (e) {
-      print(e);
     }
   }
 
   Widget goValue() {
     if (!filterModel.estimateValue) {
-      return SizedBox.shrink();
+      return domain.isPremium == true ? Text("Premium") : SizedBox.shrink();
     }
 
     return Row(

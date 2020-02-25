@@ -54,6 +54,18 @@ class _$DomainSerializer implements StructuredSerializer<Domain> {
         ..add(serializers.serialize(object.estimatedValue,
             specifiedType: const FullType(double)));
     }
+    if (object.isPremium != null) {
+      result
+        ..add('isPremium')
+        ..add(serializers.serialize(object.isPremium,
+            specifiedType: const FullType(bool)));
+    }
+    if (object.isAvailable != null) {
+      result
+        ..add('isAvailable')
+        ..add(serializers.serialize(object.isAvailable,
+            specifiedType: const FullType(bool)));
+    }
     return result;
   }
 
@@ -92,6 +104,14 @@ class _$DomainSerializer implements StructuredSerializer<Domain> {
           result.estimatedValue = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
           break;
+        case 'isPremium':
+          result.isPremium = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'isAvailable':
+          result.isAvailable = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
       }
     }
 
@@ -112,6 +132,10 @@ class _$Domain extends Domain {
   final String displayPrice;
   @override
   final double estimatedValue;
+  @override
+  final bool isPremium;
+  @override
+  final bool isAvailable;
 
   factory _$Domain([void Function(DomainBuilder) updates]) =>
       (new DomainBuilder()..update(updates)).build();
@@ -122,7 +146,9 @@ class _$Domain extends Domain {
       this.tld,
       this.price,
       this.displayPrice,
-      this.estimatedValue})
+      this.estimatedValue,
+      this.isPremium,
+      this.isAvailable})
       : super._();
 
   @override
@@ -141,7 +167,9 @@ class _$Domain extends Domain {
         tld == other.tld &&
         price == other.price &&
         displayPrice == other.displayPrice &&
-        estimatedValue == other.estimatedValue;
+        estimatedValue == other.estimatedValue &&
+        isPremium == other.isPremium &&
+        isAvailable == other.isAvailable;
   }
 
   @override
@@ -149,11 +177,15 @@ class _$Domain extends Domain {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, domainId.hashCode), name.hashCode),
-                    tld.hashCode),
-                price.hashCode),
-            displayPrice.hashCode),
-        estimatedValue.hashCode));
+                $jc(
+                    $jc(
+                        $jc($jc($jc(0, domainId.hashCode), name.hashCode),
+                            tld.hashCode),
+                        price.hashCode),
+                    displayPrice.hashCode),
+                estimatedValue.hashCode),
+            isPremium.hashCode),
+        isAvailable.hashCode));
   }
 
   @override
@@ -164,7 +196,9 @@ class _$Domain extends Domain {
           ..add('tld', tld)
           ..add('price', price)
           ..add('displayPrice', displayPrice)
-          ..add('estimatedValue', estimatedValue))
+          ..add('estimatedValue', estimatedValue)
+          ..add('isPremium', isPremium)
+          ..add('isAvailable', isAvailable))
         .toString();
   }
 }
@@ -197,6 +231,14 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
   set estimatedValue(double estimatedValue) =>
       _$this._estimatedValue = estimatedValue;
 
+  bool _isPremium;
+  bool get isPremium => _$this._isPremium;
+  set isPremium(bool isPremium) => _$this._isPremium = isPremium;
+
+  bool _isAvailable;
+  bool get isAvailable => _$this._isAvailable;
+  set isAvailable(bool isAvailable) => _$this._isAvailable = isAvailable;
+
   DomainBuilder();
 
   DomainBuilder get _$this {
@@ -207,6 +249,8 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
       _price = _$v.price;
       _displayPrice = _$v.displayPrice;
       _estimatedValue = _$v.estimatedValue;
+      _isPremium = _$v.isPremium;
+      _isAvailable = _$v.isAvailable;
       _$v = null;
     }
     return this;
@@ -234,7 +278,9 @@ class DomainBuilder implements Builder<Domain, DomainBuilder> {
             tld: tld,
             price: price,
             displayPrice: displayPrice,
-            estimatedValue: estimatedValue);
+            estimatedValue: estimatedValue,
+            isPremium: isPremium,
+            isAvailable: isAvailable);
     replace(_$result);
     return _$result;
   }

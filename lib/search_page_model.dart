@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:domain_investor/base_model.dart';
 import 'package:domain_investor/domain.dart';
+import 'package:domain_investor/product.dart';
 import 'package:domain_investor/recommended_domain.dart';
 import 'package:domain_investor/serializers.dart';
 import 'package:domain_investor/viewstate.dart';
@@ -56,19 +57,25 @@ class SearchPageViewModel extends BaseModel {
           : recommendedDomains;
 
       domainsList.addAll(resultList.map((element) {
-        return Domain.fromProduct(element);
+        return Domain.fromRecommended(element);
       }));
       domainsList.sort((a, b) => a.name.length.compareTo(b.name.length));
+
+      final exactMatches = values.where((value) => isFQDN(value));
+
+      await Future.forEach(exactMatches, (element) async {
+        final exactDomain = await loadExactMatch(element);
+        domainsList.insert(0, exactDomain);
+      });
 
       setState(ViewState.Idle);
     } catch (e) {
       setState(ViewState.Idle);
-      print(e);
     }
   }
 
-  Future<Response> loadExactMatch(String domain) async {
-    return await api
+  Future<Domain> loadExactMatch(String domain) async {
+    Response response = await api
         .get("https://www.godaddy.com/domainsapi/v1/search/exact?q=$domain")
         .catchError(
       (error) {
@@ -78,11 +85,15 @@ class SearchPageViewModel extends BaseModel {
         setState(ViewState.Idle);
       },
     );
+
+    var products = deserializeListOf<Product>(response.data['Products']);
+    return Domain.fromProduct(domain, products.first);
   }
 
   Future<Response> loadSearch(String domain) async {
     return await api
-        .get("https://www.godaddy.com/domainfind/v1/search/spins?q=$domain")
+        .get(
+            "https://www.godaddy.com/domainfind/v1/search/spins?q=$domain&pagestart=0&pagesize=34")
         .catchError(
       (error) {
         var message = (error as DioError).response.data["message"].toString();

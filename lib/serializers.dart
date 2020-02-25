@@ -3,6 +3,7 @@ import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:domain_investor/domain.dart';
 import 'package:domain_investor/estimated_value.dart';
+import 'package:domain_investor/exact_match_domain.dart';
 import 'package:domain_investor/product.dart';
 import 'package:domain_investor/recommended_domain.dart';
 
@@ -13,6 +14,7 @@ part 'serializers.g.dart';
   Product,
   PriceInfo,
   RecommendedDomain,
+  ExactMatchDomain,
   EstimatedValue,
 ])
 final Serializers serializers =

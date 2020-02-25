@@ -99,19 +99,25 @@ class SearchPage extends StatelessWidget {
                             },
                           );
                         },
-                        child: Icon(Icons.warning, color: Colors.yellow[800]))
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.warning, color: Colors.yellow[800]),
+                          ],
+                        ))
                     : model.goValue(),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     model.state == ViewState.Busy
                         ? _shimmer()
-                        : Text(
-                            model.price(),
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).accentColor),
-                          ),
+                        : model.unavailable()
+                            ? Text("Not available")
+                            : Text(
+                                model.price(),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).accentColor),
+                              ),
                   ],
                 ),
               ),

@@ -12,7 +12,8 @@ class BaseModel extends ChangeNotifier {
       contentType: "application/json",
       headers: {
         "authorization":
-            "sso-key e4sHxoWhhJgR_5CB94cXiHALpqYmW8kb7Qz:2tDDuCXgWh5FZ96KKYGC4b"
+            "sso-key e4sHxoWhhJgR_5CB94cXiHALpqYmW8kb7Qz:2tDDuCXgWh5FZ96KKYGC4b",
+        "cookie": "currency=USD;"
       },
     ),
   );

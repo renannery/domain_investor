@@ -18,30 +18,55 @@ class _$ProductSerializer implements StructuredSerializer<Product> {
   @override
   Iterable<Object> serialize(Serializers serializers, Product object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'HasIcannFee',
-      serializers.serialize(object.hasIcannFee,
-          specifiedType: const FullType(bool)),
-      'PhaseCode',
-      serializers.serialize(object.phaseCode,
-          specifiedType: const FullType(String)),
-      'PhaseId',
-      serializers.serialize(object.phaseId, specifiedType: const FullType(int)),
-      'ProductId',
-      serializers.serialize(object.productId,
-          specifiedType: const FullType(int)),
-      'RenewalProductId',
-      serializers.serialize(object.renewalProductId,
-          specifiedType: const FullType(int)),
-      'TierId',
-      serializers.serialize(object.tierId, specifiedType: const FullType(int)),
-      'Tld',
-      serializers.serialize(object.tld, specifiedType: const FullType(String)),
-      'PriceInfo',
-      serializers.serialize(object.priceInfo,
-          specifiedType: const FullType(PriceInfo)),
-    ];
-
+    final result = <Object>[];
+    if (object.hasIcannFee != null) {
+      result
+        ..add('HasIcannFee')
+        ..add(serializers.serialize(object.hasIcannFee,
+            specifiedType: const FullType(bool)));
+    }
+    if (object.phaseCode != null) {
+      result
+        ..add('PhaseCode')
+        ..add(serializers.serialize(object.phaseCode,
+            specifiedType: const FullType(String)));
+    }
+    if (object.phaseId != null) {
+      result
+        ..add('PhaseId')
+        ..add(serializers.serialize(object.phaseId,
+            specifiedType: const FullType(int)));
+    }
+    if (object.productId != null) {
+      result
+        ..add('ProductId')
+        ..add(serializers.serialize(object.productId,
+            specifiedType: const FullType(int)));
+    }
+    if (object.renewalProductId != null) {
+      result
+        ..add('RenewalProductId')
+        ..add(serializers.serialize(object.renewalProductId,
+            specifiedType: const FullType(int)));
+    }
+    if (object.tierId != null) {
+      result
+        ..add('TierId')
+        ..add(serializers.serialize(object.tierId,
+            specifiedType: const FullType(int)));
+    }
+    if (object.tld != null) {
+      result
+        ..add('Tld')
+        ..add(serializers.serialize(object.tld,
+            specifiedType: const FullType(String)));
+    }
+    if (object.priceInfo != null) {
+      result
+        ..add('PriceInfo')
+        ..add(serializers.serialize(object.priceInfo,
+            specifiedType: const FullType(PriceInfo)));
+    }
     return result;
   }
 
@@ -346,32 +371,7 @@ class _$Product extends Product {
       this.tierId,
       this.tld,
       this.priceInfo})
-      : super._() {
-    if (hasIcannFee == null) {
-      throw new BuiltValueNullFieldError('Product', 'hasIcannFee');
-    }
-    if (phaseCode == null) {
-      throw new BuiltValueNullFieldError('Product', 'phaseCode');
-    }
-    if (phaseId == null) {
-      throw new BuiltValueNullFieldError('Product', 'phaseId');
-    }
-    if (productId == null) {
-      throw new BuiltValueNullFieldError('Product', 'productId');
-    }
-    if (renewalProductId == null) {
-      throw new BuiltValueNullFieldError('Product', 'renewalProductId');
-    }
-    if (tierId == null) {
-      throw new BuiltValueNullFieldError('Product', 'tierId');
-    }
-    if (tld == null) {
-      throw new BuiltValueNullFieldError('Product', 'tld');
-    }
-    if (priceInfo == null) {
-      throw new BuiltValueNullFieldError('Product', 'priceInfo');
-    }
-  }
+      : super._();
 
   @override
   Product rebuild(void Function(ProductBuilder) updates) =>
@@ -507,12 +507,12 @@ class ProductBuilder implements Builder<Product, ProductBuilder> {
               renewalProductId: renewalProductId,
               tierId: tierId,
               tld: tld,
-              priceInfo: priceInfo.build());
+              priceInfo: _priceInfo?.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'priceInfo';
-        priceInfo.build();
+        _priceInfo?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Product', _$failedField, e.toString());

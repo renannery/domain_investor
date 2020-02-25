@@ -12,10 +12,11 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  double _maxLength = 15;
+  double _maxLength = 0;
   RangeValues _rangePrice = RangeValues(0, 200);
   RangeValues _rangeValue = RangeValues(0, 2500);
   bool _estimateValue = false;
+  bool _availableOnly = false;
 
   String formattedPrice(int number) {
     widget.numberFormat.maximumFractionDigits = 0;
@@ -32,6 +33,7 @@ class _FilterPageState extends State<FilterPage> {
     _rangePrice = widget.model.rangePrice;
     _maxLength = widget.model.maxLength;
     _estimateValue = widget.model.estimateValue;
+    _availableOnly = widget.model.availableOnly;
     super.initState();
   }
 
@@ -83,6 +85,34 @@ class _FilterPageState extends State<FilterPage> {
               padding: const EdgeInsets.all(8.0),
               child: Card(
                 child: Column(
+                  children: <Widget>[
+                    SwitchListTile(
+                      title: Row(
+                        children: <Widget>[
+                          Text(
+                            "Available only",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 20),
+                          ),
+                        ],
+                      ),
+                      value: _availableOnly,
+                      onChanged: (checked) {
+                        setState(
+                          () {
+                            _availableOnly = checked;
+                          },
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
@@ -98,7 +128,7 @@ class _FilterPageState extends State<FilterPage> {
                         _maxLength == 0 ? "any" : "${_maxLength.toInt()}",
                       ),
                     ),
-                    Slider.adaptive(
+                    Slider(
                       value: _maxLength.toDouble(),
                       onChanged: (double newValue) {
                         setState(
@@ -214,6 +244,7 @@ class _FilterPageState extends State<FilterPage> {
               widget.model.rangePrice = _rangePrice;
               widget.model.rangeValue = _rangeValue;
               widget.model.estimateValue = _estimateValue;
+              widget.model.availableOnly = _availableOnly;
               Navigator.pop(context, true);
             },
           ),

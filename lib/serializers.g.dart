@@ -9,6 +9,7 @@ part of 'serializers.dart';
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Domain.serializer)
       ..add(EstimatedValue.serializer)
+      ..add(ExactMatchDomain.serializer)
       ..add(PriceInfo.serializer)
       ..add(Product.serializer)
       ..add(RecommendedDomain.serializer)
