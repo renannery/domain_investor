@@ -180,7 +180,7 @@ class DomainModel extends BaseModel {
 
     return RichText(
       text: TextSpan(
-        style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18),
+        style: Theme.of(context).textTheme.body1.copyWith(fontSize: 18),
         children: spans,
       ),
     );

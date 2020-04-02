@@ -63,7 +63,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               textCapitalization: TextCapitalization.none,
               autofocus: widget.requestFocus,
               textAlignVertical: TextAlignVertical.center,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.subtitle,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 prefixIcon: Icon(

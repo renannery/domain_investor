@@ -218,10 +218,10 @@ class _FilterPageState extends State<FilterPage> {
                       max: 2500,
                       divisions: 20,
                       labels: RangeLabels(
-                        "${_rangeValue.start}",
+                        formattedPrice(_rangeValue.start.toInt()),
                         _rangeValue.end == 2500
                             ? "+\$2,500"
-                            : "${_rangeValue.end}",
+                            : formattedPrice(_rangeValue.end.toInt()),
                       ),
                     )
                   ],

@@ -1,26 +1,55 @@
 import 'dart:async';
-import 'dart:convert' show json, utf8;
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
+import 'package:domain_investor/registered_domain.dart';
+import 'package:domain_investor/serializers.dart';
 
 class Api {
-  static const host = "https://app.bento.ky/api/v1";
-  static const gatewayHost =
-      'https://apidev.caymangateway.com/apiv2/three-step';
-
-  static const gatewayHostApiKey =
-      '0j2Od6WbVXJr42fTIRBKvIWHMELjYb9tRd9OLUKaCbP0EVNr3cypLAI3YlWeRtlTWgIcHRratZar5STGJE4ukl1e5h6OG0x44ErEfdARSXKGnO7pnoKxxsogsWYtfujNbCIZGNRLh4vhSa4e7NnoTzpB30odAjfJooc6xposax3x6GtLAzSW54e0XCQOgIjsNtT1WB1rdZM6Ycdz5OgTy6JKJDy6oGBadUYCSAtYZW5dycDU5CP4rXE1HVosFQ7aJpYf5cF4aUewaOfZOQlUrBPnSef95gJZDyYrm0lkF4Be';
-
-  final client = http.Client();
+  Dio dio = Dio(
+    BaseOptions(
+      contentType: "application/json",
+      headers: {
+        "Authorization":
+            "sso-key e4sHvozDEuLn_6o4qc7RBscEcHWW51ptHyU:T6iD7XbrZHqUwK447eo3zy",
+        "cookie": "currency=USD;"
+      },
+    ),
+  );
 
   Map<String, String> headers = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
 
-  String readResponse(Response response) {
-    return utf8.decode(response.bodyBytes);
+  Future<List<RegisteredDomain>> manage(String customerId) async {
+    Response response =
+        await dio.get("https://api.godaddy.com/v1/domains").catchError(
+      (error) {
+        var message = (error as DioError).response.data["message"].toString();
+        print(message);
+      },
+    );
+
+    return deserializeListOf<RegisteredDomain>(response.data).toList();
+  }
+
+  Future<String> login(String username, String password) async {
+    Response response = await dio.post(
+      "https://sso.godaddy.com/v1/api/idp/login?realm=idp&path=%2Fproducts&app=account",
+      data: {
+        "username": username,
+        "password": password,
+        "remember_me": true,
+        "plid": 1,
+        "API_HOST": "godaddy.com"
+      },
+    ).catchError(
+      (error) {
+        var message = (error as DioError).response.data["message"].toString();
+        print(message);
+      },
+    );
+    final cookies = response.headers.map["set-cookie"];
+    final token = cookies.firstWhere((element) => element.contains("auth_id"));
+    return token.split(";").first;
   }
 }

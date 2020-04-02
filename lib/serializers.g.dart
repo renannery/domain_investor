@@ -7,12 +7,28 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(AddressMailing.serializer)
+      ..add(ContactAdmin.serializer)
+      ..add(ContactBilling.serializer)
+      ..add(ContactRegistrant.serializer)
+      ..add(ContactTech.serializer)
       ..add(Domain.serializer)
       ..add(EstimatedValue.serializer)
       ..add(ExactMatchDomain.serializer)
+      ..add(ManageDomainsResponse.serializer)
       ..add(PriceInfo.serializer)
       ..add(Product.serializer)
       ..add(RecommendedDomain.serializer)
+      ..add(RegisteredDomain.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(RegisteredDomain)]),
+          () => new ListBuilder<RegisteredDomain>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(int)]),
           () => new ListBuilder<int>()))
