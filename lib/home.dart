@@ -1,5 +1,6 @@
 import 'package:domain_investor/main.dart';
 import 'package:domain_investor/manage_list.dart';
+import 'package:domain_investor/view/account_view.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -58,6 +59,13 @@ class _Home extends State<Home> {
                 onGenerateRoute: (route) => MaterialPageRoute(
                   settings: route,
                   builder: (context) => ManageList(),
+                ),
+              ),
+              Navigator(
+                key: _navigatorKeys[TabItem.account],
+                onGenerateRoute: (route) => MaterialPageRoute(
+                  settings: route,
+                  builder: (context) => AccountView(),
                 ),
               ),
             ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:domain_investor/model/shopper_model.dart';
 import 'package:domain_investor/registered_domain.dart';
 import 'package:domain_investor/serializers.dart';
 
@@ -30,6 +31,18 @@ class Api {
     );
 
     return deserializeListOf<RegisteredDomain>(response.data).toList();
+  }
+
+  Future<Shopper> shopperDetails(String shopperId) async {
+    Response response =
+        await dio.get("https://api.godaddy.com/v1/shoppers/$shopperId").catchError(
+      (error) {
+        var message = (error as DioError).response.data["message"].toString();
+        print(message);
+      },
+    );
+
+    return deserialize<Shopper>(response.data);
   }
 
   Future<String> login(String username, String password) async {

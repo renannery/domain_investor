@@ -3,6 +3,7 @@ import 'package:domain_investor/domain_model.dart';
 import 'package:domain_investor/filter_model.dart';
 import 'package:domain_investor/login_model.dart';
 import 'package:domain_investor/manage_list_model.dart';
+import 'package:domain_investor/model/account_view_model.dart';
 import 'package:domain_investor/registered_domain_model.dart';
 import 'package:domain_investor/search_page_model.dart';
 import 'package:domain_investor/session_manager.dart';
@@ -23,6 +24,7 @@ void setupLocator() {
   );
   locator.registerFactory(() => DomainModel());
   locator.registerFactory(() => LoginModel());
+  locator.registerFactory(() => AccountModel());
   locator.registerFactory(() => ManageListModel());
   locator.registerFactory(() => RegisteredDomainModel());
 }

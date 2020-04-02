@@ -20,6 +20,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Product.serializer)
       ..add(RecommendedDomain.serializer)
       ..add(RegisteredDomain.serializer)
+      ..add(Shopper.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())

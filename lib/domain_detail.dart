@@ -3,6 +3,7 @@ import 'package:domain_investor/main.dart';
 import 'package:domain_investor/manage_list_model.dart';
 import 'package:domain_investor/registered_domain.dart';
 import 'package:domain_investor/registered_domain_model.dart';
+import 'package:domain_investor/view/action_button_widget.dart';
 import 'package:flutter/material.dart';
 
 class DomainDetail extends StatelessWidget {
@@ -95,107 +96,30 @@ class DomainDetail extends StatelessWidget {
                     ),
                     Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: MyApp.cardBackground,
-                                borderRadius: BorderRadius.circular(9)),
-                            child: ListTile(
-                              onTap: () {},
-                              title: Text(
-                                "Add Privacy",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.2,
-                                ),
-                              ),
-                              trailing: Icon(Icons.chevron_right),
-                              subtitle: Text(
-                                "Your registration information is public",
-                                style: TextStyle(
-                                  fontFamily: 'GDSherpa',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.175,
-                                ),
-                              ),
-                            ),
-                          ),
+                        ActionButtonWidget(
+                          "Add Privacy",
+                          "Your registration information is public",
+                          showChevron: true,
                         ),
                       ],
                     ),
                     Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: MyApp.cardBackground,
-                                borderRadius: BorderRadius.circular(9)),
-                            child: ListTile(
-                              onTap: () {},
-                              title: Text(
-                                "Renew Domain",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.2,
-                                ),
-                              ),
-                              trailing: Icon(Icons.chevron_right),
-                              subtitle: Text(
-                                "Register this domain for multiple years",
-                                style: TextStyle(
-                                  fontFamily: 'GDSherpa',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.175,
-                                ),
-                              ),
-                            ),
-                          ),
+                        ActionButtonWidget(
+                          "Renew Domain",
+                          "Register this domain for multiple years",
+                          showChevron: true,
                         ),
                       ],
                     ),
                     Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: MyApp.cardBackground,
-                                borderRadius: BorderRadius.circular(9)),
-                            child: ListTile(
-                              onTap: () {
-                                _settingModalBottomSheet(context);
-                              },
-                              title: Text(
-                                "Advanced Settings",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.2,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "Auth, DNS/NS, Contact Info, WHOIS, Transfer",
-                                style: TextStyle(
-                                  fontFamily: 'GDSherpa',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.175,
-                                ),
-                              ),
-                            ),
-                          ),
+                        ActionButtonWidget(
+                          "Advanced Settings",
+                          "Auth, DNS/NS, Contact Info, WHOIS, Transfer",
+                          onTap: () {
+                            _settingModalBottomSheet(context);
+                          },
                         ),
                       ],
                     )
@@ -283,11 +207,12 @@ class DomainDetail extends StatelessWidget {
 
 void _settingModalBottomSheet(context) {
   showModalBottomSheet(
+    useRootNavigator: true,
     context: context,
     backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+          topLeft: Radius.circular(9), topRight: Radius.circular(9)),
     ),
     builder: (BuildContext bc) {
       return ListView(

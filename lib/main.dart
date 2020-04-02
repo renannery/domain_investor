@@ -9,6 +9,7 @@ import 'package:domain_investor/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
@@ -46,6 +47,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.white));
     return MaterialApp(
       title: 'Domain Investor',
       debugShowCheckedModeBanner: false,
